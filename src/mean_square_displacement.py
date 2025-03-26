@@ -16,10 +16,11 @@ def random_walk_finals(num_steps=1000, num_walks=1000):
             - x_finals: 所有随机游走终点的x坐标数组
             - y_finals: 所有随机游走终点的y坐标数组
     """
-    x_finals = [];y_finals = [] #定义空列表存储坐标
-    for i in range(0,num_walks):    #以游走次数设定循环次数
-        x_finals.append(np.sum(np.random.choice([-1,1],num_steps))) #生成一千个随机值为±1的值并求和
-        y_finals.append(np.sum(np.random.choice([-1,1],num_steps)))
+    x_finals = np.zeros(num_walks)
+    y_finals = np.zeros(num_walks) #定义空数组存储坐标
+    for i in range(num_walks):    #以游走次数设定循环次数
+        x_finals[i] = np.sum(np.random.choice([-1,1],num_steps)) #生成一千个随机值为±1的值并求和
+        y_finals[i] = np.sum(np.random.choice([-1,1],num_steps))
     return (x_finals,y_finals)
 
 
