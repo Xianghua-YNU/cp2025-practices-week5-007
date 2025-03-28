@@ -77,6 +77,9 @@ if __name__ == "__main__":
     # Task 2: Four different random walk trajectories
     plot_multiple_walks()
     plt.show()
+# Task 2: Four different random walk trajectories
+    plot_multiple_walks()
+    plt.show()
     # TODO: 完成主程序逻辑
     # 1. 生成并绘制单个轨迹
     # 2. 生成并绘制多个轨迹
