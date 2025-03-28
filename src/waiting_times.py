@@ -14,7 +14,7 @@ def generate_coin_sequence(n_flips, p_head=0.08):
         ndarray: 一个长度为n_flips的一维数组，其中1表示正面，0表示反面
     """
     # 待实现: 使用np.random.choice生成随机序列
-    pass
+    return np.random.choice([0, 1], size=n_flips, p=[1-p_head, p_head])
 
 def calculate_waiting_times(coin_sequence):
     """计算两次正面之间的等待时间（反面次数）
@@ -37,7 +37,12 @@ def calculate_waiting_times(coin_sequence):
     # 1. 使用np.nonzero找到所有正面（值为1）的位置索引
     # 2. 使用np.diff计算连续两个正面之间的间隔
     # 3. 减1得到中间的反面数量
-    pass
+     # 找到所有正面（值为1）的位置索引
+    head_indices = np.nonzero(coin_sequence)[0]
+
+    # 计算连续两个正面之间的间隔（差值-1得到中间的反面数量）
+    waiting_times = np.diff(head_indices) - 1
+    return waiting_times
 
 def plot_waiting_time_histogram(waiting_times, log_scale=False, n_flips=None):
     """绘制等待时间直方图
@@ -59,7 +64,31 @@ def plot_waiting_time_histogram(waiting_times, log_scale=False, n_flips=None):
     # 4. 设置坐标轴标签和标题
     # 5. 如果log_scale为True，设置y轴为对数刻度
     # 6. 显示图形
-    pass
+      plt.figure(figsize=(10, 6))
+    
+    # 确定合适的bin数量
+    max_wait = max(waiting_times) if len(waiting_times) > 0 else 0
+    bins = np.arange(0, max_wait + 2) - 0.5  # 确保每个整数值有一个bin
+    
+    # 绘制直方图
+    plt.hist(waiting_times, bins=bins, density=True, alpha=0.7)
+    plt.xlabel('Waiting Time (Number of Tails)')
+    plt.ylabel('Frequency' if not log_scale else 'Frequency (Log Scale)')
+    
+    # 设置y轴为对数刻度（如果需要）
+    if log_scale:
+        plt.yscale('log')
+        title = 'Waiting Time Distribution (Semi-log Scale)'
+    else:
+        title = 'Waiting Time Distribution'
+    
+    # 在标题中添加抛硬币次数
+    if n_flips is not None:
+        title += f' - {n_flips:,} Coin Flips'
+    
+    plt.title(title)
+    plt.grid(True, alpha=0.3)
+    plt.show()
 
 def analyze_waiting_time(waiting_times):
     """分析等待时间的统计特性
@@ -83,7 +112,25 @@ def analyze_waiting_time(waiting_times):
     # 1. 计算实验平均等待时间和标准差
     # 2. 计算理论平均等待时间（几何分布和指数分布）
     # 3. 返回包含这些统计量的字典
-    pass
+    if len(waiting_times) == 0:
+        return {"mean": None, "std": None, "theoretical_mean": None}
+    
+    mean_wait = np.mean(waiting_times)
+    std_wait = np.std(waiting_times)
+    
+    # 理论上，等待时间应该服从几何分布，均值为(1-p)/p
+    p_head = 0.08  # 硬币正面概率
+    theoretical_mean = (1 - p_head) / p_head
+    
+    # 如果考虑指数分布模型（泊松过程中的等待时间）
+    exponential_mean = 1 / p_head  # 1/λ = 1/0.08 = 12.5
+    
+    return {
+        "mean": mean_wait,
+        "std": std_wait,
+        "theoretical_mean": theoretical_mean,
+        "exponential_mean": exponential_mean
+    }
 
 def run_experiment(n_flips, title):
     """运行一次等待时间实验
@@ -106,7 +153,25 @@ def run_experiment(n_flips, title):
     # 3. 分析等待时间并打印结果
     # 4. 绘制普通直方图和半对数直方图
     # 5. 返回等待时间数组和统计结果
-    pass
+    if len(waiting_times) == 0:
+        return {"mean": None, "std": None, "theoretical_mean": None}
+    
+    mean_wait = np.mean(waiting_times)
+    std_wait = np.std(waiting_times)
+    
+    # 理论上，等待时间应该服从几何分布，均值为(1-p)/p
+    p_head = 0.08  # 硬币正面概率
+    theoretical_mean = (1 - p_head) / p_head
+    
+    # 如果考虑指数分布模型（泊松过程中的等待时间）
+    exponential_mean = 1 / p_head  # 1/λ = 1/0.08 = 12.5
+    
+    return {
+        "mean": mean_wait,
+        "std": std_wait,
+        "theoretical_mean": theoretical_mean,
+        "exponential_mean": exponential_mean
+    }
 
 if __name__ == "__main__":
     # 设置随机种子以保证可重复性
